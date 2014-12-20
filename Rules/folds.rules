@@ -1,0 +1,2 @@
+sum : N
+sum [of ~ x] ~ fold(sum, x)

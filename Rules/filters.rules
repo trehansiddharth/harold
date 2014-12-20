@@ -1,0 +1,8 @@
+even : AdjP
+even [~ x] ~ filter(even, x)
+
+odd : AdjP
+odd [~ x] ~ filter(odd, x)
+
+prime : AdjP
+prime [~ x] ~ filter(prime, x)

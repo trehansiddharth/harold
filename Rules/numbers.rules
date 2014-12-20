@@ -1,0 +1,14 @@
+one : N (+ literal)
+one ~ one
+
+two : N (+ literal)
+two ~ two
+
+three : N (+ literal)
+three ~ three
+
+four : N (+ literal)
+four ~ four
+
+five : N (+ literal)
+five ~ five

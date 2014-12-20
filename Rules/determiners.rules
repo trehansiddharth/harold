@@ -1,0 +1,23 @@
+the : DetP
+the [~ x] ~ x
+
+a : DetP
+a [~ x] ~ single(x)
+
+the first : N' (- list) -> NP (+ singleton)
+the first [~ x] ~ index(one, x)
+
+the first : N (+ literal) -> N' (+ list) -> NP (+ list)
+the first [~ n] [~ x] ~ firstn(n, x)
+
+the second : N' (- list) -> NP (+ singleton)
+the second [~ x] ~ index(two, x)
+
+the third : N' (- list) -> NP (+ singleton)
+the third [~ x] ~ index(three, x)
+
+the fourth : N' (- list) -> NP (+ singleton)
+the fourth [~ x] ~ index(four, x)
+
+the fifth : N' (- list) -> NP (+ singleton)
+the fifth [~ x] ~ index(five, x)

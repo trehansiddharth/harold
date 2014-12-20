@@ -1,0 +1,17 @@
+multiples : N (+ list)
+multiples [of ~ x] ~ list(multiples, x)
+
+multiple : N
+multiple [of ~ x] ~ list(multiples, x)
+
+divisors : N (+ list)
+divisors [of ~ x] ~ list(divisors, x)
+
+divisor : N
+divisor [of ~ x] ~ list(divisors, x)
+
+numbers : N (+ list)
+numbers ~ numbers
+
+number : N
+number ~ numbers
