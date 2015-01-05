@@ -8,6 +8,7 @@ module Harold where
 	import Data.List
 
 	import qualified Data.Map.Strict as Map
+	
 	import Data.JustParse hiding (length, Result)
 	import Data.JustParse.Char
 	import Data.JustParse.Combinator
@@ -16,13 +17,12 @@ module Harold where
 
 	import Control.Exception
 
-	data Result = Num [(Int -> Int)] | List [Int] | Single Int | Filter (Int -> Bool) | Generator (Int -> [Int]) | Fold ([Int] -> Int) | Error
+	data Result = List [Int] | Single Int | Filter (Int -> Bool) | Generator (Int -> [Int]) | Fold ([Int] -> Int) | Error
 
 	instance Show Result where
 		show (List xs)	| length xs < 15	= show xs
 						| otherwise			= show (take 15 xs) ++ " and some more..."
 		show (Single x) = show x
-		show (Num x) 	= show $foldl (flip ($) ) 0 x
 		show _ = "[lambda expression]"
 
 	main :: IO ()
@@ -43,15 +43,15 @@ module Harold where
 					Nothing -> "Sorry, I can't understand what you just said. Try something else."
 					Just semantics -> show (parseSemantics semantics)
 
-	--parseSemantics :: SemanticTree -> Result
+	parseSemantics :: SemanticTree -> Result
 	parseSemantics (SemanticTree r cs) = case r of
 		"index" -> Single (x !! (n - 1))
 			where
-				Single n = convertIfNeeded . parseSemantics $ cs !! 0
+				Single n = parseSemantics (cs !! 0)
 				List x = parseSemantics (cs !! 1)
 		"firstn" -> List (take n x)
 			where
-				Single n = convertIfNeeded . parseSemantics $ cs !! 0
+				Single n = parseSemantics (cs !! 0)
 				List x = parseSemantics (cs !! 1)
 		"filter" -> List (filter f x)
 			where
@@ -66,25 +66,22 @@ module Harold where
 		"list" -> List (f n)
 			where
 				Generator f = parseSemantics (cs !! 0)
-				Single n = convertIfNeeded . parseSemantics $ cs !! 1
+				Single n = parseSemantics (cs !! 1)
 		"fold" -> Single (f x)
 			where
 				Fold f = parseSemantics (cs !! 0)
 				List x = parseSemantics (cs !! 1)
 		"sum" -> Fold sum
 		_ -> case cs of 
-			[] -> Num [(stringToFunc a)]
-			otherwise -> Num( (stringToFunc a) : n)
+			[] -> Single $ stringToFunc a 0
+			otherwise -> Single $ stringToFunc a n
 			where
 				Just a = stripPrefix "Num" r
-				Num n = parseSemantics $ cs !! 0
-	
-	convertIfNeeded (Single s) = Single s
-	convertIfNeeded (Num xs) = Single $ foldl (flip ($) ) 0 xs
+				Single n = parseSemantics $ cs !! 0
 
 	stringToFunc :: String -> (Int -> Int)
 	stringToFunc snum = a where
-		Just a = Map.lookup snum numberMap--allowed to use parseJust because non-numberKeys were parse out earlier
+		Just a = Map.lookup snum numberMap --allowed to use parseJust because non-numberKeys were parse out earlier
 
 	numberKeys = Map.keys numberMap
 	numberMap = Map.fromList numbers
