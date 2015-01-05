@@ -3,19 +3,14 @@ module Harold where
 	import Ennel.Linguistics
 
 	import Control.Monad
+	import Control.Exception
 
 	import Data.Monoid
 	import Data.List
 
-	import qualified Data.Map.Strict as Map
-	
-	import Data.JustParse hiding (length, Result)
-	import Data.JustParse.Char
-	import Data.JustParse.Combinator
-
 	import System.IO
 
-	import Control.Exception
+	import HaroldNumbers
 
 	data Result = List [Int] | Single Int | Filter (Int -> Bool) | Generator (Int -> [Int]) | Fold ([Int] -> Int) | Error
 
@@ -73,77 +68,11 @@ module Harold where
 				List x = parseSemantics (cs !! 1)
 		"sum" -> Fold sum
 		_ -> case cs of 
-			[] -> Single $ stringToFunc a 0
-			otherwise -> Single $ stringToFunc a n
+			[] -> Single $ stringToIntFunc a 0
+			otherwise -> Single $ stringToIntFunc a n
 			where
 				Just a = stripPrefix "Num" r
 				Single n = parseSemantics $ cs !! 0
 
-	stringToFunc :: String -> (Int -> Int)
-	stringToFunc snum = a where
-		Just a = Map.lookup snum numberMap --allowed to use parseJust because non-numberKeys were parse out earlier
-
-	numberKeys = Map.keys numberMap
-	numberMap = Map.fromList numbers
-	numbers = 
-		[	("a" , (+1))
-		,	("one", (+1))
-		, 	("two", (+2))
-		,	("three", (+3))
-		,	("four", (+4))
-		,	("five", (+5))
-		,	("six", (+6))
-		,	("seven", (+7))
-		,	("eight", (+8))
-		,	("nine", (+9))
-		,	("ten", (+10)) 
-		,	("eleven", (+11)) 
-		,	("twelve", (+12)) 
-		,	("thirteen", (+13)) 
-		,	("fourteen", (+14)) 
-		,	("fifteen", (+15)) 
-		,	("sixteen", (+16)) 
-		,	("seventeen", (+17)) 
-		,	("eighteen", (+17))
-		,	("nineteen", (+19)) 
-		,	("twenty", (+20)) 
-		,	("thirty", (+30)) 
-		,	("forty", (+40)) 
-		,	("fifty", (+50)) 
-		,	("sixty", (+60)) 
-		,	("seventy", (+70)) 
-		,	("eighty", (+80))
-		,	("ninety", (+90)) 
-		,	("hundred", (*100)) 
-		,	("thousand", (*1000)) 
-		,	("million", (*1000000))
-		,	("billion", (*1000000000))   ]
-
 	bugException :: SomeException -> IO ()
 	bugException = const $ putStrLn "Sorry, I understood what you said but it doesn't make any sense. This is probably my fault. Try something else."
-
-
-
-	runTestCases = do
-		hSetBuffering stdout NoBuffering
-		determiners <- loadFile "Rules/determiners.rules"
-		numbers <- loadFile "Rules/numbers.rules"
-		generators <- loadFile "Rules/generators.rules"
-		filters <- loadFile "Rules/filters.rules"
-		prepositions <- loadFile "Rules/prepositions.rules"
-		folds <- loadFile "Rules/folds.rules"
-		let table = determiners <> numbers <> generators <> filters <> prepositions <> folds
-		let theTest x = handle bugException $ do
-			putStrLn $ case runInterpreter table np x of
-				Nothing -> x ++" -> Sorry, I can't understand what you just said. Try something else."
-				Just semantics -> x ++ " -> " ++ show (parseSemantics semantics)
-		mapM theTest ["one", "one one", "two", "one two", "twenty", "one twenty", "twenty one", "twenty twenty",
-			"one hundred", "twenty hundred", "one hundred hundred", "one hundred two", "one hundred twenty two",
-			"one hundred twenty twenty", "one hundred twenty two two", "one hundred two hundred","ten", "one ten",
-			"ten one", "twenty ten", "ten ten", "one hundred ten", "one hundred ten one", "ten hundred", "ten hundred one",
-			"one thousand", "one thousand two", "one hundred thousand", "twenty thousand", "twenty hundred thousand",
-			"thousand thousand", "thousand one", "one thousand one", "five thousand twenty two", 
-			"two hundred thousand hundred five", "two hundred thousand one hundred five", "ten", "two ten", "ten two",
-			"ten twenty", "twenty ten", "ten hundred", "one hundred ten", "one hundred ten two", "one hundred ten hundred",
-			"one hundred twenty two thousand ten hundred five", "two thousand ten hundred five"]
-		return ()
