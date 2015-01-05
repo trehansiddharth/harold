@@ -10,7 +10,7 @@ module Harold where
 
 	import System.IO
 
-	import HaroldNumbers
+	import Harold.Numbers
 
 	data Result = List [Int] | Single Int | Filter (Int -> Bool) | Generator (Int -> [Int]) | Fold ([Int] -> Int) | Error
 

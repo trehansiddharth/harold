@@ -1,5 +1,18 @@
-module HaroldTest where
+module Harold.Tests where
 	import Harold
+	
+	import Ennel
+	import Ennel.Linguistics
+
+	import Control.Monad
+	import Control.Exception
+
+	import Data.Monoid
+	import Data.List
+
+	import System.IO
+
+	import Harold.Numbers
 	
 	main = do
 		hSetBuffering stdout NoBuffering

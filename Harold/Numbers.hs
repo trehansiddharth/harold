@@ -1,4 +1,4 @@
-module HaroldNumbers where
+module Harold.Numbers where
 	import Prelude hiding (lookup)
 	import Data.Map.Strict
 
