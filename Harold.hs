@@ -44,29 +44,43 @@ module Harold where
 					Just semantics -> show (parseSemantics semantics)
 
 	--parseSemantics :: SemanticTree -> Result
-	parseSemantics (SemanticTree r cs)
-		| r == "index" 	= Single (x !! (s - 1))
-		| r == "firstn" = List (take s x)
-		| r == "filter" = List (filter f x)
-		| r ==  "even" = Filter even
-		| r == "odd" = Filter odd
-		| r == "multiples" = Generator (\n -> map (n*) [1 .. 31])
-		| r == "divisors" = Generator (\n -> filter (\x -> n `mod` x == 0) [1 .. n])
-		| r == "numbers" = List [1 .. 31]
-		| r == "prime" = Filter (\n -> if (n == 1) then False else and . map (\x -> n `mod` x /= 0) $ [2 .. (n - 1)])
-		| r == "list" = List (g s)
-		| r == "fold" = Single (d x)
-		| r == "sum" = Fold sum
-		| Just a <- (stripPrefix "Num" r) = case cs of 
+	parseSemantics (SemanticTree r cs) = case r of
+		"index" -> Single (x !! (n - 1))
+			where
+				Single n = convertIfNeeded . parseSemantics $ cs !! 0
+				List x = parseSemantics (cs !! 1)
+		"firstn" -> List (take n x)
+			where
+				Single n = convertIfNeeded . parseSemantics $ cs !! 0
+				List x = parseSemantics (cs !! 1)
+		"filter" -> List (filter f x)
+			where
+				Filter f = parseSemantics (cs !! 0)
+				List x = parseSemantics (cs !! 1)
+		"even" -> Filter even
+		"odd" -> Filter odd
+		"multiples" -> Generator (\n -> map (n*) [1 .. 31])
+		"divisors" -> Generator (\n -> filter (\x -> n `mod` x == 0) [1 .. n])
+		"numbers" -> List [1 .. 31]
+		"prime" -> Filter (\n -> if (n == 1) then False else and . map (\x -> n `mod` x /= 0) $ [2 .. (n - 1)])
+		"list" -> List (f n)
+			where
+				Generator f = parseSemantics (cs !! 0)
+				Single n = convertIfNeeded . parseSemantics $ cs !! 1
+		"fold" -> Single (f x)
+			where
+				Fold f = parseSemantics (cs !! 0)
+				List x = parseSemantics (cs !! 1)
+		"sum" -> Fold sum
+		_ -> case cs of 
 			[] -> Num [(stringToFunc a)]
 			otherwise -> Num( (stringToFunc a) : n)
-		where
-			Single s = parseSemantics (cs !! 0)
-			Num n = parseSemantics (cs !! 0)
-			List x = parseSemantics (cs !! 1)
-			Filter f = parseSemantics (cs !! 0)
-			Generator g = parseSemantics (cs !! 0)
-			Fold d = parseSemantics (cs !! 0)
+			where
+				Just a = stripPrefix "Num" r
+				Num n = parseSemantics $ cs !! 0
+	
+	convertIfNeeded (Single s) = Single s
+	convertIfNeeded (Num xs) = Single $ foldl (flip ($) ) 0 xs
 
 	stringToFunc :: String -> (Int -> Int)
 	stringToFunc snum = a where
