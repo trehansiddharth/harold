@@ -1,14 +1,134 @@
-one : N (+ literal)
-one ~ one
+one : N (+ literal, - one, -ten,+ power10) -> N (+ literal, + power10)
+one [~ x] ~ Numone(x)
 
-two : N (+ literal)
-two ~ two
+one : N (+ literal, + one)
+one ~ Numone
 
-three : N (+ literal)
-three ~ three
+two : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+two [~ x] ~ Numtwo(x)
 
-four : N (+ literal)
-four ~ four
+two : N (+ literal, + one)
+two ~ Numtwo
 
-five : N (+ literal)
-five ~ five
+three : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+three [~ x] ~ Numthree(x)
+
+three : N (+ literal, + one)
+three ~ Numthree
+
+four : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+four [~ x] ~ Numfour(x)
+
+four : N (+ literal, + one)
+four ~ Numfour
+
+five : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+five [~ x] ~ Numfive(x)
+
+five : N (+ literal, + one)
+five ~ Numfive
+
+six : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+six [~ x] ~ Numsix(x)
+
+six : N (+ literal, + one)
+six ~ Numsix
+
+seven : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+seven [~ x] ~ Numseven(x)
+
+seven : N (+ literal, + one)
+seven ~ Numseven
+
+eight : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+eight [~ x] ~ Numeight(x)
+
+eight : N (+ literal, + one)
+eight ~ Numeight
+
+nine : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+nine [~ x] ~ Numnine(x)
+
+nine : N (+ literal, + one)
+nine ~ Numnine
+
+ten : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+ten [~ x] ~ Numten(x)
+
+ten : N (+ literal, + teen)
+ten ~ Numten
+
+eleven : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+eleven [~ x] ~ Numeleven(x)
+
+eleven : N (+ literal, + teen)
+eleven ~ Numeleven
+
+twelve : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+twelve [~ x] ~ Numtwelve(x)
+
+twelve : N (+ literal, + teen)
+twelve ~ Numtwelve
+
+thirteen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+thirteen [~ x] ~ Numthirteen(x)
+
+thirteen : N (+ literal, + teen)
+thirteen ~ Numthirteen
+
+fourteen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+fourteen [~ x] ~ Numfourteen(x)
+
+fourteen : N (+ literal, + teen)
+fourteen ~ Numfourteen
+
+fifteen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+fifteen [~ x] ~ Numfifteen(x)
+
+fifteen : N (+ literal, + teen)
+fifteen ~ Numfifteen
+
+sixteen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+sixteen [~ x] ~ Numsixteen(x)
+
+sixteen : N (+ literal, + teen)
+sixteen ~ Numsixteen
+
+seventeen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+seventeen [~ x] ~ Numseventeen(x)
+
+seventeen : N (+ literal, + teen)
+seventeen ~ Numseventeen
+
+eighteen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+eighteen [~ x] ~ Numeighteen(x)
+
+eighteen : N (+ literal, + teen)
+eighteen ~ Numeighteen
+
+nineeen : N (+ literal, - one, - teen, + power10) -> N (+ literal, + power10)
+nineteen [~ x] ~ Numnineeen(x)
+
+nineeen : N (+ literal, + teen)
+nineteen ~ Numnineeen(x)
+
+twenty : N (+ literal, - ten, -teen) -> N (+ ten)
+twenty [~ x] ~ Numtwenty(x)
+
+twenty : N (+ literal, + ten)
+twenty ~ Numtwenty
+
+hundred : N (+ literal, - hundred) -> N (+ literal, - ten, - teen, - one,+ power10, + hundred)
+hundred [~ x] ~ Numhundred(x)
+
+hundred : N (+ literal, + power10, + hundred)
+hundred ~ Numhundred
+
+thousand : N (+ literal, - thousand, + hundred, - teen, - ten) -> N (+ literal, - hundred, - ten, - teen, - one, + power10, + thousand)
+thousand [~ x] ~ Numthousand(x)
+
+thousand : N (+ literal, - thousand, - hundred) -> N (+ literal, - ten, - teen, - one, + power10, + thousand)
+thousand [~ x] ~ Numthousand(x)
+
+thousand : N (+ literal, + power10, + thousand)
+thousand ~ Numthousand
